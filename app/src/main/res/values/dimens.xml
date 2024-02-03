@@ -10,7 +10,7 @@
 
     <!-- Text -->
     <dimen name="header_text_size">22sp</dimen>
-    <dimen name="text_size">16dp</dimen>
+    <dimen name="text_size">16sp</dimen>
     <dimen name="content_caption_size">22sp</dimen>
 
     <!-- Button Settings -->
