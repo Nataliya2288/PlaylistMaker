@@ -1,22 +1,13 @@
 package com.practicum.playlistmaker
 
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import com.practicum.playlistmaker.R
 
 class SettingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,7 +35,7 @@ class SettingActivity : AppCompatActivity() {
             startActivity(shareIntent)
         }
         buttonSupport.setOnClickListener {
-            val supportIntent = Intent(Intent.ACTION_SEND)
+            val supportIntent = Intent(Intent.ACTION_SENDTO)
             supportIntent.data = Uri.parse("mailto:")
             supportIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.my_email)))
             supportIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.mail_subject))

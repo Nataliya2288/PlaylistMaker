@@ -1,16 +1,9 @@
 package com.practicum.playlistmaker
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Parcel
-import android.os.Parcelable
-import android.view.View
 import android.widget.Button
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.Toast
-import java.util.Objects
+import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity() : AppCompatActivity() {
 
