@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 
 class SearchActivity : AppCompatActivity() {
     companion object {
@@ -20,6 +21,8 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var inputEditText: EditText
     private lateinit var back: TextView
     private lateinit var clearButton: ImageView
+    private val audio = ArrayList<Track>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,8 +39,10 @@ class SearchActivity : AppCompatActivity() {
             val imm: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(window.decorView.windowToken, 0)
         }
-        val simpleTextWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+        val trackAdapter = TrackAdapter(trackList)
+        recyclerView.adapter = trackAdapter
+        val simpleTextWatcher = object : TextWatcher { override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
 
@@ -50,7 +55,7 @@ class SearchActivity : AppCompatActivity() {
 
             }
         }
-        inputEditText.addTextChangedListener(simpleTextWatcher)
+    inputEditText.addTextChangedListener(simpleTextWatcher)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -73,3 +78,4 @@ class SearchActivity : AppCompatActivity() {
     }
 
 }
+
