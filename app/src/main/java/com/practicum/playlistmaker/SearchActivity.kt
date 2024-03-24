@@ -25,7 +25,7 @@ class SearchActivity : AppCompatActivity() {
         const val TEXT_SEARCH = "TEXT_SEARCH"
     }
 
-    private val iTunesBaseUrl = "https://itunes.apple.com"
+    private val iTunesBaseUrl = "http://itunes.apple.com"
     private val retrofit = Retrofit.Builder()
         .baseUrl(iTunesBaseUrl)
         .addConverterFactory(GsonConverterFactory.create())
@@ -33,8 +33,8 @@ class SearchActivity : AppCompatActivity() {
     private val iTunesService = retrofit.create(iTunesAPI::class.java)
     private val trackList = ArrayList<Track>()
     private val adapter = TrackAdapter()
-    private var tempText = ""
 
+    private var searchHistoryList = ArrayList<Track>()
     private lateinit var clearButton: ImageView
     private lateinit var backArrowImageView: ImageView
     private lateinit var inputEditText: EditText
@@ -44,6 +44,8 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var statusCaption: TextView
     private lateinit var statusAddText: TextView
     private lateinit var btnReload: Button
+    private lateinit var historySearchText: TextView
+    private lateinit var btnClearHistory: Button
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,9 +56,12 @@ class SearchActivity : AppCompatActivity() {
         statusImage = findViewById(R.id.status_img)
         statusCaption = findViewById(R.id.status_caption)
         statusAddText = findViewById(R.id.status_add_text)
-        btnReload = findViewById(R.id.reload_btn)
         backArrowImageView = findViewById(R.id.backArrowImageView)
         clearButton = findViewById(R.id.clearIcon)
+        historySearchText = findViewById(R.id.history_search_text)
+        btnClearHistory = findViewById(R.id.clear_history_btn)
+        recyclerView = findViewById(R.id.recyclerView)
+        btnReload = findViewById(R.id.reload_btn)
         btnReload.setOnClickListener {
             iTunesSearch()
         }
@@ -75,6 +80,17 @@ class SearchActivity : AppCompatActivity() {
             val imm: InputMethodManager =
                 getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(window.decorView.windowToken, 0)
+            searchHistoryList = SearchHistory.fill()
+            viewResult(
+                if (searchHistoryList.size > 0)
+                TrackSearchStatus.ShowHistory
+            else TrackSearchStatus.Empty
+            )
+        }
+        btnClearHistory.setOnClickListener {
+            searchHistoryList.clear()
+            SearchHistory.clear()
+            viewResult(TrackSearchStatus.Empty)
         }
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -91,35 +107,46 @@ class SearchActivity : AppCompatActivity() {
             }
         }
     inputEditText.addTextChangedListener(simpleTextWatcher)
-        recyclerView = findViewById(R.id.recyclerView)
-        adapter.trackList = trackList
+        searchHistoryList = SearchHistory.fill()
         recyclerView.adapter = adapter
-
+        viewResult(
+            if (searchHistoryList.size > 0)
+                TrackSearchStatus.ShowHistory
+            else TrackSearchStatus.Empty
+        )
         inputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 iTunesSearch()
-                true
             }
             false
         }
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {
-        if (s.isNullOrEmpty()) {
+        return if (s.isNullOrEmpty()) {
             trackList.clear()
-            adapter.notifyDataSetChanged()
-            viewSearchResult(TrackSearchStatus.Success)
-            return View.GONE
+            viewResult(TrackSearchStatus.Success)
+             View.GONE
         } else {
-            return View.VISIBLE
+             View.VISIBLE
         }
     }
 
-    private fun viewSearchResult(status: TrackSearchStatus) {
+        private fun viewResult(status: TrackSearchStatus) {
         when (status) {
+            TrackSearchStatus.Empty -> {
+                statusLayout.visibility = View.GONE
+                recyclerView.visibility = View.GONE
+                historySearchText.visibility = View.GONE
+                btnClearHistory.visibility = View.GONE
+            }
             TrackSearchStatus.Success -> {
                 statusLayout.visibility = View.GONE
                 recyclerView.visibility = View.VISIBLE
+                historySearchText.visibility = View.GONE
+                btnClearHistory.visibility = View.GONE
+                adapter.trackList = trackList
+
             }
             TrackSearchStatus.NoDataFound -> {
                 statusLayout.visibility = View.VISIBLE
@@ -128,6 +155,8 @@ class SearchActivity : AppCompatActivity() {
                 statusAddText.visibility = View.GONE
                 btnReload.visibility = View.GONE
                 statusCaption.setText(R.string.no_data_found)
+                historySearchText.visibility = View.GONE
+                btnClearHistory.visibility = View.GONE
             }
             TrackSearchStatus.ConnectionError -> {
                 statusLayout.visibility = View.VISIBLE
@@ -135,7 +164,17 @@ class SearchActivity : AppCompatActivity() {
                 statusImage.setImageResource(R.drawable.connect_error)
                 statusAddText.visibility = View.VISIBLE
                 btnReload.visibility = View.VISIBLE
-                statusCaption.setText(R.string.connect_err)
+                statusCaption.setText(R.string.connect_error)
+                historySearchText.visibility = View.GONE
+                btnClearHistory.visibility = View.GONE
+            }
+            TrackSearchStatus.ShowHistory -> {
+                statusLayout.visibility = View.GONE
+                recyclerView.visibility = View.VISIBLE
+                historySearchText.visibility = View.VISIBLE
+                btnClearHistory.visibility = View.VISIBLE
+                adapter.trackList = searchHistoryList
+
             }
         }
 
@@ -153,20 +192,20 @@ class SearchActivity : AppCompatActivity() {
                         trackList.clear()
                         if (response.body()?.results?.isNotEmpty() == true) {
                             trackList.addAll(response.body()?.results!!)
-                            adapter.notifyDataSetChanged()
+
                         }
                         if (trackList.isEmpty()) {
-                            viewSearchResult(TrackSearchStatus.NoDataFound)
+                            viewResult(TrackSearchStatus.NoDataFound)
                         } else {
-                            viewSearchResult(TrackSearchStatus.Success)
+                            viewResult(TrackSearchStatus.Success)
                         }
                     } else {
-                        viewSearchResult(TrackSearchStatus.ConnectionError)
+                        viewResult(TrackSearchStatus.ConnectionError)
                     }
                 }
 
                 override fun onFailure(call: Call<TrackResponce>, t: Throwable) {
-                    viewSearchResult(TrackSearchStatus.ConnectionError)
+                    viewResult(TrackSearchStatus.ConnectionError)
                 }
 
             })
@@ -178,5 +217,3 @@ class SearchActivity : AppCompatActivity() {
         outState.putString(TEXT_SEARCH, inputEditText.text.toString())
     }
 }
-
-
