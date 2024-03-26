@@ -117,6 +117,7 @@ class SearchActivity : AppCompatActivity() {
         inputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 iTunesSearch()
+                true
             }
             false
         }
@@ -146,6 +147,7 @@ class SearchActivity : AppCompatActivity() {
                 historySearchText.visibility = View.GONE
                 btnClearHistory.visibility = View.GONE
                 adapter.trackList = trackList
+                adapter.notifyDataSetChanged()
 
             }
             TrackSearchStatus.NoDataFound -> {
@@ -174,6 +176,7 @@ class SearchActivity : AppCompatActivity() {
                 historySearchText.visibility = View.VISIBLE
                 btnClearHistory.visibility = View.VISIBLE
                 adapter.trackList = searchHistoryList
+                adapter.notifyDataSetChanged()
 
             }
         }
