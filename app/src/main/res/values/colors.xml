@@ -14,17 +14,21 @@
     <color name="switch_on">#3772E7</color>
     <color name="light_grey">#AEAFB4</color>
     <color name="grey_tint_search">#E6E8EB</color>
-
     <!-- Background -->
     <color name="background_blue">#3772E7</color>
     <color name="background_white">#F5F5F5</color>
     <color name="background_black">#1A1B22</color>
-
     <!-- Text -->
     <color name="text_color">#1A1B22</color>
     <color name="gray">#AEAFB4</color>
+
     <!-- Icon -->
     <color name="icon_color">#1A1B22</color>
     <color name="icon_default_color">#AEAFB4</color>
+
+    <!--Switch-->
+    <color name="enable_thumb">#AEAFB4</color>
+    <color name="disable_thumb">#AEAFB4</color>
+    <color name="thumb_foreground">#42221f1f</color>
 
 </resources>
