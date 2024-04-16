@@ -13,6 +13,7 @@ class SettingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setting)
 
+        val sharedPreferences = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
 
         val buttonShare = findViewById<TextView>(R.id.share_app)
         val buttonSupport = findViewById<TextView>(R.id.write_in_support)
@@ -47,6 +48,9 @@ class SettingActivity : AppCompatActivity() {
 
         themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
             (applicationContext as App).switchTheme(checked)
+            sharedPreferences.edit()
+                .putBoolean(KEY_FOR_APP_THEME, checked)
+                .apply()
         }
     }
 }
