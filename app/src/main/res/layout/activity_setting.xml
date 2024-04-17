@@ -7,6 +7,7 @@
     android:background="?attr/colorSecondaryVariant"
     android:orientation="vertical"
     tools:ignore="UseSwitchCompatOrMaterialXml">
+
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="@dimen/toolbar_height">
@@ -16,7 +17,7 @@
         style="@style/ImageViewToolbarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/arrow_back"/>
+        app:srcCompat="@drawable/arrow_back" />
     <TextView
         android:id="@+id/settingsTextView"
         style="@style/TextViewToolbarStyle"
