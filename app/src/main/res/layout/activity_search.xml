@@ -89,7 +89,8 @@
             android:id="@+id/progressBar"
             android:layout_width="@dimen/progress_bar_size"
             android:layout_height="@dimen/progress_bar_size"
-            android:layout_gravity="center"
+            android:layout_gravity="center_horizontal|top"
+            android:layout_marginTop="@dimen/margin_top"
             android:indeterminateTint="@color/progress_bar"
             android:visibility="gone" />
 
@@ -99,6 +100,8 @@
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/margin_l_normal"
             android:visibility="visible" />
+
+
 
         <LinearLayout
             android:id="@+id/not_found_widget"
