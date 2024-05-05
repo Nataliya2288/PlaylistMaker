@@ -77,6 +77,8 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var historyRecyclerView: RecyclerView
     private lateinit var clearHistoryButton: Button
     private lateinit var progressBar: ProgressBar
+    private lateinit var searchedText: TextView
+
 
     @SuppressLint("MissingInflatedId")
 
@@ -113,6 +115,7 @@ class SearchActivity : AppCompatActivity() {
         historyWidget = findViewById(R.id.history_widget)
         clearHistoryButton = findViewById(R.id.clear_history_button)
         progressBar = findViewById(R.id.progressBar)
+        searchedText=findViewById(R.id.history_text)
 
         clearHistoryButton.setOnClickListener {
             searchHistory!!.clearHistoryList()
@@ -148,9 +151,9 @@ class SearchActivity : AppCompatActivity() {
                 textFromSearchWidget = inputEditText.text.toString()
 
                 // On Focus Actions
-                historyWidget.visibility =
-                    if (inputEditText.hasFocus() && s?.isEmpty() == true && searchHistory!!.historyList.isNotEmpty()) View.VISIBLE else View.GONE
+                historyWidget.visibility = if (inputEditText.hasFocus() && s?.isEmpty() == true && searchHistory!!.historyList.isNotEmpty()) View.VISIBLE else View.GONE
                 searchDebounce()
+
             }
 
             override fun afterTextChanged(p0: Editable?) {
@@ -228,8 +231,12 @@ class SearchActivity : AppCompatActivity() {
 
     private fun search() {
         if (inputEditText.text.toString().isNotEmpty()) {
-
             progressBar.visibility = View.VISIBLE
+            notFoundWidget.visibility = View.GONE
+            badConnectionWidget.visibility = View.GONE
+            historyRecyclerView.visibility = View.GONE
+            clearHistoryButton.visibility = View.GONE
+            searchedText.visibility = View.GONE
 
             trackService.search(text = inputEditText.text.toString())
                 .enqueue(object : Callback<TrackResponse> {
@@ -251,7 +258,6 @@ class SearchActivity : AppCompatActivity() {
                                     showPlaceholder(true)
                                 }
                             }
-
 
                             else -> {
                                 showPlaceholder(false, getString(R.string.server_error))
