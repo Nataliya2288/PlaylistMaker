@@ -1,13 +1,17 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.presentation.ui.setting
 
 import android.content.Intent
-import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.switchmaterial.SwitchMaterial
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.presentation.ui.App
+import com.practicum.playlistmaker.presentation.ui.KEY_FOR_APP_THEME
+import com.practicum.playlistmaker.presentation.ui.SHARED_PREFERENCES
+
 class SettingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

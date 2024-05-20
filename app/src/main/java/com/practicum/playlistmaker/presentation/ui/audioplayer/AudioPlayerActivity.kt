@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.presentation.ui.audioplayer
 
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -11,6 +11,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.gson.Gson
+import com.practicum.playlistmaker.presentation.ui.search.KEY_FOR_PLAYLIST
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.domain.Track
 import java.text.SimpleDateFormat
 import java.util.*
 
