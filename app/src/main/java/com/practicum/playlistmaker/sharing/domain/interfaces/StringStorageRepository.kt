@@ -1,0 +1,5 @@
+package com.practicum.playlistmaker.sharing.domain.interfaces
+
+interface StringStorageRepository {
+    fun getStringById(id: Int): String
+}
