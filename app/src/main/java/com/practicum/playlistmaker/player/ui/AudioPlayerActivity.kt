@@ -13,11 +13,12 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.player.domain.models.PlayerTrack
 import com.practicum.playlistmaker.player.presentation.PlayerViewModel
-import com.practicum.playlistmaker.player.presentation.PlayerViewModelFactory
 import com.practicum.playlistmaker.player.presentation.STATE_PAUSED
 import com.practicum.playlistmaker.player.presentation.STATE_PLAYING
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.KEY_FOR_PLAYER
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import java.io.Serializable
 
 class AudioPlayerActivity : AppCompatActivity() {
@@ -33,7 +34,11 @@ class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var playButton: ImageView
     private lateinit var durationInTime: TextView
 
-    private lateinit var viewModel: PlayerViewModel
+    private lateinit var playerTrack: PlayerTrack
+
+    private val viewModel by viewModel<PlayerViewModel> {
+        parametersOf(playerTrack)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,7 +66,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         val track = intent.getSerializable(KEY_FOR_PLAYER, Track::class.java)
 
-        viewModel = ViewModelProvider(this, PlayerViewModelFactory(convertTrackToPlayerTrack(track)))[PlayerViewModel::class.java]
+        playerTrack = convertTrackToPlayerTrack(track)
 
         viewModel.playerTrackForRender.observe(this) { playerTrack ->
             render(playerTrack)

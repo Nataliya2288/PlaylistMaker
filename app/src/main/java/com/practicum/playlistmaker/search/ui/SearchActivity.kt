@@ -18,21 +18,19 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.player.ui.AudioPlayerActivity
 import com.practicum.playlistmaker.search.presentation.SearchingViewModel
-import com.practicum.playlistmaker.search.presentation.SearchingViewModelFactory
 import com.practicum.playlistmaker.search.ui.models.TracksState
-
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 const val KEY_FOR_PLAYER = "key_for_player"
 class SearchActivity : AppCompatActivity() {
     var textFromSearchWidget = ""
-    private lateinit var viewModel: SearchingViewModel
+    private val viewModel by viewModel<SearchingViewModel>()
 
     companion object {
         const val EDIT_TEXT_VALUE = "EDIT_TEXT_VALUE"
@@ -52,6 +50,7 @@ class SearchActivity : AppCompatActivity() {
             clickToHistoryTrackList(it)
         }
     }
+
     private lateinit var inputEditText: EditText
     private lateinit var clearButton: ImageView
     private lateinit var backArrowImageView: ImageView
@@ -72,8 +71,6 @@ class SearchActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-
-        viewModel = ViewModelProvider(this, SearchingViewModelFactory(this))[SearchingViewModel::class.java]
 
         viewModel.tracksState.observe(this) { tracksState ->
             render(tracksState)
