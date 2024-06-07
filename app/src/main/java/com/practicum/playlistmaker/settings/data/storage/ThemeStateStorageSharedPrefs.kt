@@ -1,12 +1,9 @@
 package com.practicum.playlistmaker.settings.data.storage
 
-import android.content.Context
+import android.content.SharedPreferences
 import com.practicum.playlistmaker.KEY_FOR_APP_THEME
-import com.practicum.playlistmaker.SHARED_PREFERENCES
 
-class ThemeStateStorageSharedPrefs(context: Context): ThemeStateStorage {
-
-    private val sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE)
+class ThemeStateStorageSharedPrefs(private val sharedPreferences: SharedPreferences): ThemeStateStorage {
 
     override fun getThemeStateStorage(): Boolean {
         return sharedPreferences.getBoolean(KEY_FOR_APP_THEME, false)
