@@ -22,6 +22,7 @@ class HistoryTrackRepositorySHImpl (private val trackSearchHistoryStorage: Track
                 country = it.country,
                 previewUrl = it.previewUrl
             )
+
         }.toTypedArray()
 
         return tracks

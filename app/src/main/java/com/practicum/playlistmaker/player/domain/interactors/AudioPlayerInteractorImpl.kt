@@ -33,10 +33,9 @@ class AudioPlayerInteractorImpl(
             previewUrl = playerTrack.previewUrl,
             callbackOnPrepared = {
                 callbackPrep.invoke()
-            },
-            callbackOnCompletion = {
-                callbackComp.invoke()
             }
-        )
+        ) {
+            callbackComp.invoke()
+        }
     }
     }

@@ -5,5 +5,5 @@ interface AudioPlayerRepository {
     fun pause()
     fun release()
     fun currentPos(): Int
-    fun prepare(previewUrl: String, callbackOnPrepared: () -> Unit, callbackOnCompletion: () -> Unit)
+    fun prepare(previewUrl: String?, callbackOnPrepared: () -> Unit, callbackOnCompletion: () -> Unit)
 }
