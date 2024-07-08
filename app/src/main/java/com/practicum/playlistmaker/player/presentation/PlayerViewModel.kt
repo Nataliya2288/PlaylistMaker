@@ -50,9 +50,9 @@ class PlayerViewModel(
 
     private fun assignValToPlayerTrackForRender() {
         val playerTrackTo = playerTrack.copy(
-            artworkUrl = playerTrack.artworkUrl.replaceAfterLast('/', "512x512bb.jpg"),
-            releaseDate = playerTrack.releaseDate.split("-", limit = 2)[0],
-            trackTime = getTimeFormat(playerTrack.trackTime.toLong())
+            artworkUrl = playerTrack.artworkUrl?.replaceAfterLast('/', "512x512bb.jpg"),
+            releaseDate = playerTrack.releaseDate?.split("-", limit = 2)?.get(0),
+            trackTime = playerTrack.trackTime.let { getTimeFormat(it.toLong()) }
         )
         _playerTrack.postValue(playerTrackTo)
     }

@@ -21,7 +21,7 @@ class AudioPlayerRepositoryImpl(private val mediaPlayer: MediaPlayer): AudioPlay
         return mediaPlayer.currentPosition
     }
 
-    override fun prepare(previewUrl: String, callbackOnPrepared: () -> Unit, callbackOnCompletion: () -> Unit) {
+    override fun prepare(previewUrl: String?, callbackOnPrepared: () -> Unit, callbackOnCompletion: () -> Unit) {
         mediaPlayer.setDataSource(previewUrl)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
