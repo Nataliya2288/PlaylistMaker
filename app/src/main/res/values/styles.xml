@@ -149,7 +149,7 @@
 
     <!--Styles for medialibrary_screen-->
 
-    <style name="MedialibraryTableoutStyle">
+    <style name="MedialibraryTablayoutStyle">
         <item name="tabTextColor">@color/moderately_black</item>
         <item name="tabIndicatorColor">@color/moderately_black</item>
         <item name="android:background">@color/white</item>
@@ -163,4 +163,9 @@
     </style>
 
     <!--/Styles for medialibrary_screen-->
+
+    <style name="BottomMenuStyle">
+        <item name="itemIconTint">@drawable/bottom_menu_icon_color_day_mode</item>
+        <item name="itemTextColor">@drawable/bottom_menu_icon_color_day_mode</item>
+    </style>
 </resources>
