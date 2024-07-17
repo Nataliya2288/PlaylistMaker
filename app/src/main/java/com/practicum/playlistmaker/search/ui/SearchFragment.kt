@@ -39,7 +39,7 @@ class SearchFragment: Fragment() {
 
     private var _binding: FragmentSearchBinding?=null
     private val binding get() = _binding!!
-    var textFromSearchWidget = ""
+    private var textFromSearchWidget = ""
     private val viewModel by viewModel<SearchingViewModel>()
 
     companion object {
