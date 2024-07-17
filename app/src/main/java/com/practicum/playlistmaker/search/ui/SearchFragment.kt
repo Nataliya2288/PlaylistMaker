@@ -37,7 +37,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class SearchFragment: Fragment() {
     private var bottomNavigationListener: BottomNavigationListener? = null
 
-    private lateinit var binding: FragmentSearchBinding
+    private var _binding: FragmentSearchBinding?=null
+    private val binding get() = _binding!!
     var textFromSearchWidget = ""
     private val viewModel by viewModel<SearchingViewModel>()
 
@@ -91,7 +92,7 @@ class SearchFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentSearchBinding.inflate(inflater, container, false)
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -205,6 +206,7 @@ class SearchFragment: Fragment() {
     override fun onDestroyView() {
         viewModel.onDestroy()
         super.onDestroyView()
+        _binding = null
     }
     override fun onPause() {
         super.onPause()

@@ -15,7 +15,8 @@ import com.practicum.playlistmaker.settings.presentation.SettingsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingFragment : Fragment () {
-    private lateinit var binding: FragmentSettingsBinding
+    private  var _binding: FragmentSettingsBinding?=null
+    private val binding get() = _binding!!
     private lateinit var shareAppFrameLayout: FrameLayout
     private lateinit var supportFrameLayout: FrameLayout
     private lateinit var agreementFrameLayout: FrameLayout
@@ -28,7 +29,7 @@ class SettingFragment : Fragment () {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -79,5 +80,10 @@ class SettingFragment : Fragment () {
             viewModel.saveAndChangeThemeState(checked)
         }
     }
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
 }
+
 
