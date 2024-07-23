@@ -104,7 +104,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     }
 
-    fun <T : Serializable?> Intent.getSerializable(key: String, m_class: Class<T>): T {
+    private fun <T : Serializable?> Intent.getSerializable(key: String, m_class: Class<T>): T {
         return if (SDK_INT >= TIRAMISU)
             this.getSerializableExtra(key, m_class)!!
         else

@@ -21,7 +21,6 @@
 
         <activity
             android:name=".player.ui.AudioPlayerActivity"
-            android:screenOrientation="portrait"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

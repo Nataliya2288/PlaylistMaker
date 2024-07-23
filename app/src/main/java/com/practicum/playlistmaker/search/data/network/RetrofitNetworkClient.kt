@@ -5,7 +5,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import com.practicum.playlistmaker.search.data.dto.Response
 import com.practicum.playlistmaker.search.data.dto.TrackSearchRequest
-import java.io.IOException
+
 
 
 class RetrofitNetworkClient(private val context: Context, private val trackService: ITunesApi): NetworkClient {
@@ -17,16 +17,12 @@ class RetrofitNetworkClient(private val context: Context, private val trackServi
         if (dto !is TrackSearchRequest) {
             return Response().apply { resultCode = 400 }
     }
-        return try {
-            val response = trackService.search(dto.expression).execute()
+        val response = trackService.search(dto.expression).execute()
 
-            val body = response.body()
+        val body = response.body()
 
-            body?.apply { resultCode = response.code() } ?: Response().apply { resultCode = response.code() }
-        } catch (e: IOException) {
-            // Handle IOException
-            Response().apply { resultCode = -1 }
-        }
+        return body?.apply { resultCode = response.code() } ?: Response().apply { resultCode = response.code() }
+
     }
 
 private fun isConnected(): Boolean {

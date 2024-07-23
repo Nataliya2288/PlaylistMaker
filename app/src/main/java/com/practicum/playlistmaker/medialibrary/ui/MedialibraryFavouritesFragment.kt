@@ -11,6 +11,10 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class MedialibraryFavouritesFragment : Fragment() {
+    companion object {
+        fun newInstance()= MedialibraryFavouritesFragment ()
+    }
+
 
     private val viewModel: MedialibraryFavouritesViewModel by viewModel()
 
@@ -25,11 +29,9 @@ class MedialibraryFavouritesFragment : Fragment() {
         _binding = FragmentFavouritesMedialibraryBinding.inflate(inflater, container, false)
         return binding.root
     }
-
-    companion object {
-        fun newInstance(): MedialibraryFavouritesFragment {
-            return MedialibraryFavouritesFragment()
-        }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }

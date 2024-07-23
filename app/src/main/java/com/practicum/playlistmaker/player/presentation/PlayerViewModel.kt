@@ -52,12 +52,12 @@ class PlayerViewModel(
         val playerTrackTo = playerTrack.copy(
             artworkUrl = playerTrack.artworkUrl?.replaceAfterLast('/', "512x512bb.jpg"),
             releaseDate = playerTrack.releaseDate?.split("-", limit = 2)?.get(0),
-            trackTime = playerTrack.trackTime.let { getTimeFormat(it.toLong()) }
+            trackTime = getTimeFormat(playerTrack.trackTime.toLong())
         )
         _playerTrack.postValue(playerTrackTo)
     }
 
-    fun play() {
+    private fun play() {
         audioPlayerInteractor.play()
         _playerState.postValue(STATE_PLAYING)
         mainThreadHandler.postDelayed(cycleRunnable, UPDATE_TIME_INFO_MS)

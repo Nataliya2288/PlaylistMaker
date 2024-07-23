@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.search.ui
 
+
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -25,14 +26,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.KEY_FOR_PLAYER
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentSearchBinding
-import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.player.ui.AudioPlayerActivity
 import com.practicum.playlistmaker.root.listeners.BottomNavigationListener
+import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.presentation.SearchingViewModel
 import com.practicum.playlistmaker.search.ui.models.TracksState
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
-import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
 import org.koin.androidx.viewmodel.ext.android.viewModel
+
 
 class SearchFragment: Fragment() {
     private var bottomNavigationListener: BottomNavigationListener? = null
@@ -96,6 +97,7 @@ class SearchFragment: Fragment() {
         return binding.root
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -187,17 +189,14 @@ class SearchFragment: Fragment() {
         }
         KeyboardVisibilityEvent.setEventListener(
             activity = requireActivity(),
-            lifecycleOwner = viewLifecycleOwner,
-            object : KeyboardVisibilityEventListener {
-                override fun onVisibilityChanged(isOpen: Boolean) {
-                    if (isOpen) {
-                        onKeyboardVisibilityChanged(true)
-                    } else {
-                        onKeyboardVisibilityChanged(false)
-                    }
-                }
+            lifecycleOwner = viewLifecycleOwner
+        ) { isOpen ->
+            if (isOpen) {
+                onKeyboardVisibilityChanged(true)
+            } else {
+                onKeyboardVisibilityChanged(false)
             }
-        )
+        }
     }
     override fun onStop() {
         super.onStop()
@@ -239,6 +238,7 @@ class SearchFragment: Fragment() {
         intent.putExtra(KEY_FOR_PLAYER, track)
         startActivity(intent)
     }
+
     @SuppressLint("NotifyDataSetChanged")
     private fun showPlaceholder(flag: Boolean?, message: String = "") {
         if (flag != null) {
