@@ -7,6 +7,7 @@ import com.practicum.playlistmaker.search.data.dto.Response
 import com.practicum.playlistmaker.search.data.dto.TrackSearchRequest
 
 
+
 class RetrofitNetworkClient(private val context: Context, private val trackService: ITunesApi): NetworkClient {
 
     override fun doRequest(dto: Any): Response {
@@ -16,14 +17,13 @@ class RetrofitNetworkClient(private val context: Context, private val trackServi
         if (dto !is TrackSearchRequest) {
             return Response().apply { resultCode = 400 }
     }
+        val response = trackService.search(dto.expression).execute()
 
-    val response = trackService.search(dto.expression).execute()
+        val body = response.body()
 
-    val body = response.body()
+        return body?.apply { resultCode = response.code() } ?: Response().apply { resultCode = response.code() }
 
-    return body?.apply { resultCode = response.code() } ?: Response().apply { resultCode = response.code() }
-
-}
+    }
 
 private fun isConnected(): Boolean {
     val connectivityManager = context.getSystemService(

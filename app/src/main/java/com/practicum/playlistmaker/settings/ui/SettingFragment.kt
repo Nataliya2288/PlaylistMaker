@@ -1,20 +1,22 @@
 package com.practicum.playlistmaker.settings.ui
 
-import android.annotation.SuppressLint
+
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.ImageView
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.google.android.material.switchmaterial.SwitchMaterial
-import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.databinding.FragmentSettingsBinding
 import com.practicum.playlistmaker.settings.presentation.SettingsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SettingActivity : AppCompatActivity() {
-
-    private lateinit var backArrowImageView: ImageView
+class SettingFragment : Fragment () {
+    private  var _binding: FragmentSettingsBinding?=null
+    private val binding get() = _binding!!
     private lateinit var shareAppFrameLayout: FrameLayout
     private lateinit var supportFrameLayout: FrameLayout
     private lateinit var agreementFrameLayout: FrameLayout
@@ -22,16 +24,22 @@ class SettingActivity : AppCompatActivity() {
 
     private val viewModel by viewModel<SettingsViewModel>()
 
-    @SuppressLint("MissingInflatedId")
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_setting)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        backArrowImageView = findViewById(R.id.backArrowImageView)
-        shareAppFrameLayout = findViewById(R.id.shareAppFrameLayout)
-        supportFrameLayout = findViewById(R.id.supportFrameLayout)
-        agreementFrameLayout = findViewById(R.id.agreementFrameLayout)
-        themeSwitcher = findViewById(R.id.themeSwitcher)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        shareAppFrameLayout = binding.shareAppFrameLayout
+        supportFrameLayout = binding.supportFrameLayout
+        agreementFrameLayout = binding.agreementFrameLayout
+        themeSwitcher = binding.themeSwitcher
 
         themeSwitcher.isChecked = viewModel.getThemeState()
 
@@ -68,13 +76,14 @@ class SettingActivity : AppCompatActivity() {
             startActivity(browserIntent)
         }
 
-        backArrowImageView.setOnClickListener {
-            finish()
-        }
-
         themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
             viewModel.saveAndChangeThemeState(checked)
         }
     }
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
 }
+
 

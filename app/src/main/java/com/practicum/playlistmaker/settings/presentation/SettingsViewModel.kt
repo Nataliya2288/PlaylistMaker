@@ -41,4 +41,5 @@ class SettingsViewModel(
     fun getArrayOfEmailAddresses(): Array<String> {
         return arrayOf("ameliya2288@yandex.ru")
     }
+
 }
