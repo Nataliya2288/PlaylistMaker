@@ -239,22 +239,25 @@ class SearchFragment: Fragment() {
         startActivity(intent)
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun showPlaceholder(flag: Boolean?, message: String = "") {
-        if (flag != null) {
-            if (flag == true) {
+        when (flag) {
+            true -> {
                 badConnectionWidget.visibility = View.GONE
                 notFoundWidget.visibility = View.VISIBLE
-            } else {
+            }
+            false -> {
                 notFoundWidget.visibility = View.GONE
                 badConnectionWidget.visibility = View.VISIBLE
                 badConnectionTextView.text = message
             }
-            adapter.tracks.clear()
-            adapter.notifyDataSetChanged()
-        } else {
-            notFoundWidget.visibility = View.GONE
-            badConnectionWidget.visibility = View.GONE
+            null -> {
+                notFoundWidget.visibility = View.GONE
+                badConnectionWidget.visibility = View.GONE
+            }
+        }
+        // Очищаем список треков, если флаг установлен
+        if (flag == true || flag == false) {
+            updateTracksList(emptyList()) // Вызываем метод для обновления списка
         }
     }
 
@@ -262,47 +265,48 @@ class SearchFragment: Fragment() {
         val current = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
-            handler.postDelayed({isClickAllowed = true}, CLICK_DEBOUNCE_DELAY)
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
         }
-
         return current
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun render(tracksState: TracksState) {
+        showLoading(tracksState.isLoading)
+
+        if (tracksState.isFailed != null) {
+            val message = if (tracksState.isFailed) {
+                getString(R.string.server_error)
+            } else {
+                getString(R.string.bad_connection)
+            }
+            showPlaceholder(false, message)
+        } else {
+            handleTracks(tracksState.tracks)
+        }
+    }
+
+    private fun handleTracks(tracks: List<Track>) {
         when {
-
-            tracksState.isLoading -> showLoading(true)
-
+            tracks.isEmpty() && inputEditText.text.toString().isNotEmpty() -> {
+                showPlaceholder(true) // Показываем плейсхолдер "не найдено"
+            }
             else -> {
-
-                showLoading(false)
-
-                if (tracksState.isFailed != null) {
-
-                    when {
-                        tracksState.isFailed -> showPlaceholder(false, getString(R.string.server_error))
-                        else -> showPlaceholder(false, getString(R.string.bad_connection))
-                    }
-
-                } else {
-
-                    when {
-                        tracksState.tracks.isEmpty() && inputEditText.text.toString().isNotEmpty() -> showPlaceholder(true)
-                        else -> {
-                            adapter.tracks.clear()
-                            adapter.tracks.addAll(tracksState.tracks)
-                            adapter.notifyDataSetChanged()
-                            showPlaceholder(null)
-                        }
-                    }
-                }
+                updateTracksList(tracks) // Обновляем список
+                showPlaceholder(null) // Скрываем плейсхолдеры
             }
         }
     }
-    private fun showLoading(isLoaded: Boolean) {
-        progressBar.visibility = if (isLoaded) View.VISIBLE else View.GONE
+
+    private fun updateTracksList(tracks: List<Track>) {
+        adapter.tracks.clear()
+        adapter.tracks.addAll(tracks)
+        adapter.notifyDataSetChanged()
     }
+
+    private fun showLoading(isLoading: Boolean) {
+        progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+
     private fun onKeyboardVisibilityChanged(isVisible: Boolean) {
         if (isVisible) {
             bottomNavigationListener?.toggleBottomNavigationViewVisibility(false)

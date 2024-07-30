@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.practicum.playlistmaker.databinding.FragmentFavouritesMedialibraryBinding
 import com.practicum.playlistmaker.medialibrary.presentation.MedialibraryFavouritesViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -12,14 +13,11 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MedialibraryFavouritesFragment : Fragment() {
     companion object {
-        fun newInstance()= MedialibraryFavouritesFragment ()
+        fun newInstance() = MedialibraryFavouritesFragment()
     }
-
-
-    private val viewModel: MedialibraryFavouritesViewModel by viewModel()
-
     private var _binding: FragmentFavouritesMedialibraryBinding? = null
     private val binding get() = _binding!!
+    private val viewModel: MedialibraryFavouritesViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,

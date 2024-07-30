@@ -5,25 +5,29 @@ import com.practicum.playlistmaker.player.data.repository.AudioPlayerRepositoryI
 import com.practicum.playlistmaker.player.domain.interactors.AudioPlayerInteractorImpl
 import com.practicum.playlistmaker.player.domain.interfaces.AudioPlayerInteractor
 import com.practicum.playlistmaker.player.domain.interfaces.AudioPlayerRepository
-import com.practicum.playlistmaker.player.domain.models.PlayerTrack
 import com.practicum.playlistmaker.player.presentation.PlayerViewModel
+import com.practicum.playlistmaker.search.domain.models.Track
+
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
 
 val playerModule = module {
+    // Создание экземпляра MediaPlayer
     factory { MediaPlayer() }
 
-    factory <AudioPlayerRepository> {
+    // Определение AudioPlayerRepository
+    factory<AudioPlayerRepository> {
         AudioPlayerRepositoryImpl(mediaPlayer = get())
     }
 
-    factory<AudioPlayerInteractor> { (playerTrack: PlayerTrack) ->
-        AudioPlayerInteractorImpl(playerTrack = playerTrack, audioPlayerRepository = get())
+    // Определение AudioPlayerInteractor с правильной передачей параметров
+    factory<AudioPlayerInteractor> { (track: Track) ->
+        AudioPlayerInteractorImpl(audioPlayerRepository = get())
     }
 
-    viewModel { (playerTrack: PlayerTrack) ->
-        PlayerViewModel(playerTrack = playerTrack, audioPlayerInteractor = get { parametersOf(playerTrack) })
+    // Определение ViewModel с правильным использованием параметров
+    viewModel { (track: Track) ->
+        PlayerViewModel(track = track, audioPlayerInteractor = get { parametersOf(track) })
     }
-
 }
