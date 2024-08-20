@@ -114,8 +114,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
                 inputEditText.setText(savedInstanceState.getString(EDIT_TEXT_VALUE, ""))
             }
 
-            viewModel.tracksState.observe(viewLifecycleOwner) { tracksState ->
-                render(tracksState)
+            viewModel.tracksState.observe(viewLifecycleOwner) { TracksState ->
+                render(TracksState)
             }
 
             val inputMethodManager =
@@ -142,7 +142,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
             inputEditText.setOnFocusChangeListener { _, hasFocus ->
                 historyWidget.visibility =
-                    if (hasFocus && inputEditText.text.isEmpty() && viewModel.getHistoryList().isNotEmpty()) View.VISIBLE else View.GONE
+                    if (hasFocus && inputEditText.text.isEmpty() && viewModel.getHistoryList()
+                            .isNotEmpty()
+                    ) View.VISIBLE else View.GONE
             }
 
             clearButton.setOnClickListener {
@@ -150,21 +152,31 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
                 adapter.tracks.clear()
                 adapter.notifyDataSetChanged()
                 inputMethodManager.hideSoftInputFromWindow(inputEditText.windowToken, 0)
+                historyWidget.visibility = View.GONE // Не показываем историю при плохом соединении
+                badConnectionWidget.visibility = View.GONE
+                notFoundWidget.visibility = View.GONE
             }
 
             updateButton.setOnClickListener {
                 viewModel.searchRequest(inputEditText.text.toString())
             }
-
             val textWatcher = object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     clearButton.visibility = clearButtonVisibility(s)
                     textFromSearchWidget = s?.toString() ?: ""
 
                     historyWidget.visibility =
-                        if (inputEditText.hasFocus() && s?.isEmpty() == true && viewModel.getHistoryList().isNotEmpty()) View.VISIBLE else View.GONE
+                        if (inputEditText.hasFocus() && s?.isEmpty() == true && viewModel.getHistoryList()
+                                .isNotEmpty()
+                        ) View.VISIBLE else View.GONE
 
                     viewModel.searchDebounce(s?.toString() ?: "")
                 }
@@ -185,9 +197,14 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
                 activity = requireActivity(),
                 lifecycleOwner = viewLifecycleOwner
             ) { isOpen ->
-                onKeyboardVisibilityChanged(isOpen)
+                if (isOpen) {
+                    onKeyboardVisibilityChanged(true)
+                } else {
+                    onKeyboardVisibilityChanged(false)
+                }
             }
         }
+
 
         override fun onStop() {
             super.onStop()
@@ -238,7 +255,11 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
             startActivity(intent)
         }
 
-        private fun showPlaceholder(showNotFound: Boolean?, showBadConnection: Boolean, message: String = "") {
+        private fun showPlaceholder(
+            showNotFound: Boolean?,
+            showBadConnection: Boolean,
+            message: String = ""
+        ) {
             notFoundWidget.visibility = if (showNotFound == true) View.VISIBLE else View.GONE
             badConnectionWidget.visibility = if (showBadConnection) View.VISIBLE else View.GONE
             badConnectionTextView.text = message
@@ -253,7 +274,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
             val current = isClickAllowed
             if (isClickAllowed) {
                 isClickAllowed = false
-                handler.postDelayed({ isClickAllowed = true }, Companion.CLICK_DEBOUNCE_DELAY)
+                handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
             }
 
             return current
@@ -274,14 +295,17 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
             }
         }
 
-        private fun handleTracks(tracks: List<Track>) {
-            when {
-                tracks.isEmpty() && inputEditText.text.toString().isNotEmpty() -> {
-                    showPlaceholder(showNotFound = true, showBadConnection = false)
-                }
-                else -> {
-                    updateTracksList(tracks)
-                    showPlaceholder(showNotFound = null, showBadConnection = false)
+        private fun handleTracks(tracks: List<Track>?) {
+            if (tracks != null) {
+                when {
+                    tracks.isEmpty() && inputEditText.text.toString().isNotEmpty() -> {
+                        showPlaceholder(showNotFound = true, showBadConnection = false)
+                    }
+
+                    else -> {
+                        updateTracksList(tracks)
+                        showPlaceholder(showNotFound = null, showBadConnection = false)
+                    }
                 }
             }
         }
@@ -297,6 +321,13 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
         }
 
         private fun onKeyboardVisibilityChanged(isVisible: Boolean) {
-            bottomNavigationListener?.toggleBottomNavigationViewVisibility(!isVisible)
+            if (isVisible) {
+                bottomNavigationListener?.toggleBottomNavigationViewVisibility(false)
+            } else {
+                bottomNavigationListener?.toggleBottomNavigationViewVisibility(true)
+            }
         }
     }
+
+
+

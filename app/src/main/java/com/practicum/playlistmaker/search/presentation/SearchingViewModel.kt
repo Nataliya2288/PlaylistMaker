@@ -90,7 +90,7 @@ class SearchingViewModel(
 
             _tracksState.postValue(
                 TracksState(
-                    tracks = tracks,
+                    tracks = null,
                     isLoading = true,
                     isFailed = null
                 )
