@@ -10,6 +10,10 @@ import com.practicum.playlistmaker.medialibrary.presentation.MedialibraryPlaylis
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MedialibraryPlaylistsFragment : Fragment() {
+    companion object {
+
+        fun newInstance() = MedialibraryPlaylistsFragment()
+    }
 
     private val viewModel: MedialibraryPlaylistsViewModel by viewModel()
 
@@ -24,10 +28,8 @@ class MedialibraryPlaylistsFragment : Fragment() {
         _binding = FragmentPlaylistsMedialibraryBinding.inflate(inflater, container, false)
         return binding.root
     }
-
-    companion object {
-        fun newInstance(): MedialibraryPlaylistsFragment {
-            return MedialibraryPlaylistsFragment()
-        }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
