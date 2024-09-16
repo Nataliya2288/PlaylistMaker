@@ -3,114 +3,93 @@ import android.media.MediaPlayer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.player.domain.interfaces.AudioPlayerInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-
+private const val REFRESH_PROGRESS_DELAY = 300L
 
 class PlayerViewModel(
+
     private val audioPlayerInteractor: AudioPlayerInteractor,
     track: Track?
-) : ViewModel() {
-    private val statePlayerLiveData = MutableLiveData(trackAnalysis(track))
+): ViewModel() {
 
-    init {
-        track?.let {
-            setDataSource(it.previewUrl)
-            preparePlayer()
-            setOnPreparedListener {
-                statePlayerLiveData.postValue(PlayerState.STATE_PREPARED)
-            }
-            setOnCompletionListener {
-                statePlayerLiveData.postValue(PlayerState.STATE_COMPLETED)
-            }
-        } ?: run {
-            statePlayerLiveData.postValue(PlayerState.STATE_ERROR)
-        }
-    }
+    private var timerJob: Job? = null
 
-    // Анализ трека
-    private fun trackAnalysis(track: Track?): PlayerState {
-        return if (track == null) {
-            PlayerState.STATE_ERROR
-        } else {
-            if (!track.collectionName!!.isNotEmpty()) {
-                PlayerState.STATE_DEFAULT
-            } else {
-                PlayerState.STATE_NO_ALBUM_NAME
-            }
-        }
-    }
+    private var statePlayerLiveData = MutableLiveData<PlayerState>(PlayerState.Default())
 
     // Получение состояния плеера
     fun getStatePlayerLiveData(): LiveData<PlayerState> = statePlayerLiveData
 
-    // Изменение состояния плеера
-    fun updateStatePlayerLiveData(state: PlayerState) {
-        if (statePlayerLiveData.value != state) {
-            statePlayerLiveData.postValue(state)
+    init {
+        setDataSource(track?.previewUrl)
+        preparePlayer()
+        setOnPreparedListener {
+            statePlayerLiveData.postValue(PlayerState.Prepared())
+        }
+        setOnCompletionListener {
+            statePlayerLiveData.postValue(PlayerState.Prepared())
         }
     }
-
     // Изменение состояния плеера после клика по кнопке Play
-     fun changeStatePlayerAfterClick() {
+    fun changeStatePlayerAfterClick () {
         when (statePlayerLiveData.value) {
-            PlayerState.STATE_PLAYING -> statePlayerLiveData.postValue(PlayerState.STATE_PAUSED)
-            PlayerState.STATE_PAUSED, PlayerState.STATE_PREPARED -> statePlayerLiveData.postValue(PlayerState.STATE_PLAYING)
+            is PlayerState.Playing -> pause()
+            is PlayerState.Paused, is PlayerState.Prepared -> start()
             else -> {}
         }
     }
-
     // Плеер
     private fun setDataSource(url: String?) {
         audioPlayerInteractor.setDataSource(url)
     }
-
     private fun preparePlayer() {
         audioPlayerInteractor.preparePlayer()
     }
-
-    fun start() {
+    private fun start() {
         audioPlayerInteractor.start()
+        statePlayerLiveData.postValue(PlayerState.Playing(currentPosition()))
+        startTimer()
     }
-
     fun pause() {
         audioPlayerInteractor.pause()
+        timerJob?.cancel()
+        statePlayerLiveData.postValue(PlayerState.Paused(currentPosition()))
     }
-
-    fun currentPosition(): String {
+    private fun startTimer() {
+        timerJob = viewModelScope.launch {
+            while (isPlaying()) {
+                delay(REFRESH_PROGRESS_DELAY)
+                if (statePlayerLiveData.value is PlayerState.Playing) {
+                    statePlayerLiveData.postValue(PlayerState.Playing(currentPosition()))
+                }
+            }
+        }
+    }
+    private fun currentPosition(): String {
         return audioPlayerInteractor.currentPosition()
     }
-
     private fun setOnPreparedListener(listener: MediaPlayer.OnPreparedListener) {
         audioPlayerInteractor.setOnPreparedListener(listener)
     }
-
     private fun setOnCompletionListener(listener: MediaPlayer.OnCompletionListener) {
         audioPlayerInteractor.setOnCompletionListener(listener)
     }
-
-    private fun release() {
+    private fun isPlaying (): Boolean {
+        return audioPlayerInteractor.isPlaying()
+    }
+    private fun release () {
         audioPlayerInteractor.release()
     }
-
     override fun onCleared() {
         super.onCleared()
         release()
-
     }
-}
-
-enum class PlayerState {STATE_PLAYING,
-    STATE_PAUSED,
-    STATE_PREPARED,
-    STATE_ERROR,
-    STATE_COMPLETED,
-    STATE_DEFAULT,
-    STATE_NO_ALBUM_NAME
-
-}
-
+        }
 
 
 

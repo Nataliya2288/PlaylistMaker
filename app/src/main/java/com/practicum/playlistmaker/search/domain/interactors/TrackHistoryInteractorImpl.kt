@@ -7,7 +7,7 @@ import com.practicum.playlistmaker.search.domain.interfaces.TrackHistoryInteract
 class TrackHistoryInteractorImpl(private val historyTrackRepositorySH: HistoryTrackRepositorySH?):
     TrackHistoryInteractor {
 
-    private val historyList: ArrayList<Track> = ArrayList(historyTrackRepositorySH?.getTrackListFromSH()?.toList())
+    private val historyList = ArrayList<Track>()
 
     override fun getHistoryList(): ArrayList<Track> {
         return historyList

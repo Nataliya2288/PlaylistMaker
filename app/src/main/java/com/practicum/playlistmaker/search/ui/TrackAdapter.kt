@@ -27,7 +27,7 @@ class TrackAdapter(private val clickListener: TrackClickListener): RecyclerView.
         fun bind(track: Track) {
 
             val formattedTime =
-                SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTime.toLong())
+                SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTime?.toLong())
 
             Glide.with(itemView).load(track.artworkUrl).placeholder(R.drawable.placeholder)
                 .into(artwork)

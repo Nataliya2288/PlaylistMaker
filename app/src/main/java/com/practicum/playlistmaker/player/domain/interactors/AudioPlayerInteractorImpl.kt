@@ -13,9 +13,11 @@ class AudioPlayerInteractorImpl(
     override fun setDataSource(url: String?) {
         audioPlayerRepository.setDataSource(url)
     }
+
     override fun preparePlayer() {
         audioPlayerRepository.preparePlayer()
     }
+
     override fun start() {
         audioPlayerRepository.start()
     }
@@ -23,6 +25,7 @@ class AudioPlayerInteractorImpl(
     override fun pause() {
         audioPlayerRepository.pause()
     }
+
     override fun currentPosition(): String {
         return audioPlayerRepository.currentPosition()
     }
@@ -34,7 +37,14 @@ class AudioPlayerInteractorImpl(
     override fun setOnCompletionListener(listener: MediaPlayer.OnCompletionListener) {
         audioPlayerRepository.setOnCompletionListener(listener)
     }
+
     override fun release() {
         audioPlayerRepository.release()
     }
+
+    override fun isPlaying(): Boolean {
+        return audioPlayerRepository.isPlaying()
+    }
 }
+
+
