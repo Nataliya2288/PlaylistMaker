@@ -1,6 +1,5 @@
 package com.practicum.playlistmaker.player.ui
 import android.content.Intent
-import android.os.Build
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.TIRAMISU
 import android.os.Bundle
@@ -28,6 +27,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var currentTime: String
     private lateinit var viewModel: PlayerViewModel
     private lateinit var binding: ActivityAudioPlayerBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
@@ -41,6 +41,7 @@ class AudioPlayerActivity : AppCompatActivity() {
             binding.durationInTime.text = currentTime
         }
         screenPreparation(track)    // Заполнение экрана
+
         // Нажатие кнопки Назад закрывает AudioPlayer
         binding.backArrowPlaylist.setOnClickListener {
             finish()
@@ -70,7 +71,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     private fun screenPreparation(track: Track?) {
         // Выводим обложку альбома
         Glide.with(this)
-            .load(track?.artworkUrl)
+            .load(track?.artworkUrl512)
             .placeholder(R.drawable.track_placeholder_max)
             .centerCrop()
             .transform(
@@ -83,6 +84,8 @@ class AudioPlayerActivity : AppCompatActivity() {
                 )
             )
             .into(binding.coverMax)
+
+
         // Заполняем поля:
         binding.trackName.text = track?.trackName                        // Назввание трека
         binding.artistName.text = track?.artistName                      // Имя исполнителя

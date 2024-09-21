@@ -44,6 +44,7 @@ class PlayerViewModel(
         }
     }
     // Плеер
+
     private fun setDataSource(url: String?) {
         audioPlayerInteractor.setDataSource(url)
     }
@@ -60,6 +61,7 @@ class PlayerViewModel(
         timerJob?.cancel()
         statePlayerLiveData.postValue(PlayerState.Paused(currentPosition()))
     }
+
     private fun startTimer() {
         timerJob = viewModelScope.launch {
             while (isPlaying()) {
