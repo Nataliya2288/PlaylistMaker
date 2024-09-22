@@ -13,4 +13,5 @@ interface AudioPlayerInteractor {
     fun setOnPreparedListener(listener: MediaPlayer.OnPreparedListener)
     fun setOnCompletionListener(listener: MediaPlayer.OnCompletionListener)
     fun setDataSource(url: String?)
+    fun isPlaying(): Boolean
 }

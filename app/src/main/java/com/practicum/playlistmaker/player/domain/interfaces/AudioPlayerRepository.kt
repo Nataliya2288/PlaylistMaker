@@ -11,4 +11,5 @@ interface AudioPlayerRepository {
     fun setOnPreparedListener(listener: MediaPlayer.OnPreparedListener)
     fun setOnCompletionListener(listener: MediaPlayer.OnCompletionListener)
     fun release()
+    fun isPlaying(): Boolean
 }
